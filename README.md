@@ -61,5 +61,6 @@ Brightness adjustment and rotation features were added to diversify the training
 ### 6.2 Future Improvements
 In the future, the program will be enhanced with an improved algorithm capable of detecting multiple signs in various environments simultaneously.
 
-## 7. Source Code
+
+
 If you have any questions, feel free to contact me at Doyoung Kim (felixkim0719@gmail.com).
