@@ -1,64 +1,65 @@
-# 자동 라벨링 프로그램
+# Auto Labeling Program
 
-## 1. 라벨링이란
+## 1. What is Labeling?
+Labeling is the process of creating an answer key for given data, and this answer key is referred to as a **label**. In **supervised learning**, a form of deep learning, labeled data is required. If the model is trained with inaccurate labels, its performance will degrade, making **accurate labeling** crucial.
 
-### 1.1 개요
-라벨링이란 주어진 데이터에 정답지를 만들어주는 작업으로, 이 정답지를 **라벨**이라고 합니다. 딥러닝(Deep Learning)에서 **지도학습(Supervised Learning)**을 하는 경우, 주어지는 데이터에 대해 라벨이 필요하며, 부정확한 라벨로 학습할 경우 모델 성능이 떨어지기 때문에 **정확한 라벨링**이 매우 중요합니다.
+## 2. Motivation
+In ROS-based autonomous driving systems, data labeling for sign recognition is an essential task. However, manual labeling can be time-consuming. To efficiently automate this process, the auto-labeling program was developed. This program aims to significantly reduce development time by automating the recognition and labeling of signs.
 
-## 2. 제작 동기
-ROS 기반 자율주행 시스템에서 **표지판 학습을 위한 데이터 라벨링**은 중요한 작업입니다. 하지만 수작업으로 라벨링을 할 경우 시간이 많이 소요되므로, 이를 효율적으로 자동화하기 위해 **자동 라벨링 프로그램**을 개발하게 되었습니다. 이 프로그램은 표지판 인식 및 라벨링을 자동화하여 개발 시간을 크게 단축하는 것을 목표로 하고 있습니다.
+## 3. Program Description
 
-## 3. 프로그램 설명
+### 3.1 Labeling Targets
+The auto-labeling program targets the following types of signs:
+- Intersection
+- Construction Zone
+- Level Crossing
+- Parking
+- Tunnel
 
-### 3.1 라벨링 대상
-자동 라벨링 대상은 다음과 같은 표지판들입니다:
-- 교차로 (Intersection)
-- 건설 구역 (Construction)
-- 철도 건널목 (Level Crossing)
-- 주차 구역 (Parking)
-- 터널 (Tunnel)
+### 3.2 Purpose of Auto Labeling
+The program is designed to quickly and accurately detect various sign objects and automatically generate data for machine learning model training.
 
-### 3.2 자동 라벨링 목적
-자동 라벨링 프로그램은 다양한 표지판 객체를 빠르고 정확하게 검출하여 **머신러닝 모델 학습용 데이터**를 자동으로 생성하는 데 목적을 두고 있습니다.
+## 4. Program Structure
 
-## 4. 프로그램 구조 설명
+### 4.1 Initial Setup
+- Capture video stream from a camera.
+- Set the width and height of the frame.
+- Store class information for labeling in a `classes.txt` file.
 
-### 4.1 초기 설정
-- 카메라로 비디오 스트림을 캡처
-- 프레임의 너비와 높이 설정
-- `classes.txt` 파일에 라벨링할 클래스 정보 저장
+### 4.2 Sign Detection Process
+1. **Intersection Sign Detection**
+   - Convert the image to grayscale and use Hough Transform to detect circles. Based on the position and size of the circles, create a label file.
+   
+2. **Construction & Tunnel Sign Detection**
+   - Convert the image to HSV color space, combine yellow and black areas to emphasize boundaries, and detect triangles to create the label file.
+   
+3. **Stop Sign Detection**
+   - Extract the red area from the image, detect circles, and create a label file based on the position and size.
+   
+4. **Parking Sign Detection**
+   - Extract the blue area, detect rectangles, and create a label file based on the position and size.
+   
+5. **Program Termination**
+   - Close the camera and all OpenCV windows.
 
-### 4.2 표지판 검출 과정
-1. **교차로 표지판 검출**
-   - 흑백 이미지로 변환 후 Hough 변환을 통해 원을 검출하고, 위치와 크기를 기반으로 라벨 파일 생성
-2. **공사장 & 터널 표지판 검출**
-   - HSV 색상 공간에서 노란색과 검은색 영역을 결합해 경계를 강조하고 삼각형을 검출하여 라벨 파일 생성
-3. **정지 표지판 검출**
-   - 빨간색 영역을 추출하여 원을 검출하고 위치와 크기를 기반으로 라벨 파일 생성
-4. **주차 표지판 검출**
-   - 파란색 영역에서 사각형을 찾아 라벨 파일 생성
-5. **프로그램 종료**
-   - 카메라 및 모든 OpenCV 창 종료
+## 5. Source Code Explanation
 
-## 5. 프로그램 소스 설명
+### 5.1 Intersection Sign Detection
+- **Frame Reading**: Use `capture.read()` to read frames from the camera.
+- **Grayscale Conversion**: Convert the image to grayscale using `cv2.cvtColor()`.
+- **Hough Transform**: Detect circles using `cv2.HoughCircles()` and store the coordinates and size.
 
-### 5.1 교차로 표지판 검출 소스 설명
-- **프레임 읽기**: `capture.read()`를 사용해 카메라로부터 프레임을 읽어옵니다.
-- **그레이스케일 변환**: `cv2.cvtColor()`를 사용해 그레이스케일로 전환합니다.
-- **Hough 변환**: `cv2.HoughCircles()`로 원을 검출하고, 좌표와 크기를 저장합니다.
+### 5.2 Construction & Tunnel Sign Detection
+- **HSV Conversion and Color Extraction**: Convert the image to HSV color space, then extract yellow and black areas to highlight the boundaries.
+- **Triangle Detection and Storage**: Extract contours, detect triangles, and store their position and size.
 
-### 5.2 공사장 & 터널 표지판 검출 소스 설명
-- **HSV 변환 및 색상 추출**: HSV 색상 공간으로 변환 후 노란색과 검은색 영역을 추출하여 경계를 강조합니다.
-- **삼각형 검출 및 저장**: 외곽선을 추출하고, 삼각형의 위치와 크기를 저장합니다.
+## 6. Additional Activities
 
-## 6. 추가 활동
+### 6.1 Model Performance Improvement
+Brightness adjustment and rotation features were added to diversify the training data, resulting in improved model performance.
 
-### 6.1 모델 성능 향상 기능
-- 이미지의 **명도 조정** 및 **회전 변형** 기능을 추가하여 학습 데이터를 다양화하고 모델 성능을 향상시켰습니다.
+### 6.2 Future Improvements
+In the future, the program will be enhanced with an improved algorithm capable of detecting multiple signs in various environments simultaneously.
 
-### 6.2 개선 사항
-- 향후 다양한 환경과 여러 표지판을 동시에 검출할 수 있는 **향상된 알고리즘**으로 개선할 예정입니다.
-
-## 7. 소스 코드
-궁금한 점이 있으시면 아래 메일로 주세요.
-Doyoung Kim (felixkim0719@gmail.com)
+## 7. Source Code
+If you have any questions, feel free to contact me at Doyoung Kim (felixkim0719@gmail.com).
