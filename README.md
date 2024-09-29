@@ -60,6 +60,5 @@ ROS 기반 자율주행 시스템에서 **표지판 학습을 위한 데이터 �
 - 향후 다양한 환경과 여러 표지판을 동시에 검출할 수 있는 **향상된 알고리즘**으로 개선할 예정입니다.
 
 ## 7. 소스 코드
-프로그램의 전체 소스 코드는 GitHub에서 확인하실 수 있습니다:
-
-[GitHub 링크](https://github.com/felixkim0719/Auto_labeling)
+궁금한 점이 있으시면 아래 메일로 주세요.
+Doyoung Kim (felixkim0719@gmail.com)
